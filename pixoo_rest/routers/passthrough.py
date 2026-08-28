@@ -144,7 +144,7 @@ def create_endpoint(passthrough_model: PassthroughModel) -> Callable[..., Corout
         payload = json.load(payload_file)
 
     async def endpoint(body: Annotated[dict, Body(examples=[payload], description=passthrough_model.description)]):
-        return requests.post(url=f'http://{pixoo.ip_address}/post', json=body).json()
+        return requests.post(url=f'http://{pixoo.ip_address}/divoom_api', json=body).json()
 
     return endpoint
 

@@ -79,7 +79,7 @@ The query-response must contain a JSON-payload with this structure:
 The device's built-in method [draw/sendHttpItemList](#/pass-through/post_passthrough_draw_sendHttpItemList) is used for this feature. 
 ''')
 def download_text(text_model: Annotated[TextModel, Form()]) -> Any:
-    return requests.post(f'http://{pixoo.ip_address}/post', json.dumps({
+    return requests.post(f'http://{pixoo.ip_address}/divoom_api', json.dumps({
         'Command': 'Draw/SendHttpItemList',
         'ItemList': [
             {

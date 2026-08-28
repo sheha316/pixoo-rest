@@ -40,7 +40,7 @@ settings = Settings.get()
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, Any]:
     if settings.pixoo_connection_check:
         for connection_test_count in range(settings.pixoo_connection_check_retries + 1):
-            if helpers.try_to_request(f'http://{settings.pixoo_host}/get'):
+            if helpers.try_to_request(f'http://{settings.pixoo_host}:9000/divoom_api'):
                 break
 
             if connection_test_count == settings.pixoo_connection_check_retries:
