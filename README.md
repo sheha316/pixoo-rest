@@ -44,6 +44,7 @@ So... I'll keep maintaining the project as long as there's enough interest.
 * [Running](#running)
    * [Direct](#direct)
    * [Containerized](#containerized)
+   * [Home Assistant Add-on](#home-assistant-add-on)
 * [Usage](#usage)
    * [Examples](#examples)
 * [License](#license)
@@ -180,6 +181,18 @@ Simply uncomment the `image`-attribute in [docker-compose.yml](docker-compose.ym
 ```
 
 There's also a [Helm chart](helm) you can use for deployments to [K8s](https://kubernetes.io/).
+
+### Home Assistant Add-on
+
+This repo can also be installed as a native [Home Assistant](https://www.home-assistant.io/)
+add-on (tested on Home Assistant OS):
+
+1. In Home Assistant, go to **Settings** → **Add-ons** → **Add-on Store**.
+2. Click the **⋮** menu (top right) → **Repositories**.
+3. Add this repository's URL (e.g. `https://github.com/sheha316/pixoo-rest`) and click **Add**.
+4. Find **Pixoo REST** in the store and click **Install**.
+5. Open the **Configuration** tab and set `PIXOO_HOST` (and any other options) to match your device.
+6. Start the add-on, then use **Open Web UI** to reach the Swagger UI at `/docs`.
 
 ## Usage
 

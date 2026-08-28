@@ -27,4 +27,4 @@ COPY --from=git_clone /pixoo pixoo_rest/pixoo
 HEALTHCHECK --interval=5m --timeout=3s \
     CMD curl --fail --silent http://localhost:8000/${SCRIPT_NAME}/health || exit 1
 
-CMD [ "uv", "run", "fastapi", "run", "pixoo_rest" ]
+CMD [ "uv", "run", "python", "-m", "pixoo_rest.addon_entrypoint" ]

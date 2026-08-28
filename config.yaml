@@ -1,0 +1,29 @@
+name: "Pixoo REST"
+version: "2.1.0"
+slug: "pixoo_rest"
+description: "A RESTful API to easily interact with the Wi-Fi enabled Divoom Pixoo devices."
+url: "https://github.com/sheha316/pixoo-rest"
+arch:
+  - amd64
+  - aarch64
+startup: services
+boot: auto
+ports:
+  8000/tcp: 8000
+ports_description:
+  8000/tcp: "Pixoo REST API / Swagger UI"
+webui: "http://[HOST]:[PORT:8000]/docs"
+options:
+  PIXOO_HOST: "Pixoo64"
+  PIXOO_SCREEN_SIZE: 64
+  PIXOO_DEBUG: false
+  PIXOO_CONNECTION_CHECK: true
+  PIXOO_CONNECTION_CHECK_RETRIES: 3
+  PIXOO_REST_DEBUG: false
+schema:
+  PIXOO_HOST: "str"
+  PIXOO_SCREEN_SIZE: "int"
+  PIXOO_DEBUG: "bool"
+  PIXOO_CONNECTION_CHECK: "bool"
+  PIXOO_CONNECTION_CHECK_RETRIES: "int"
+  PIXOO_REST_DEBUG: "bool"
