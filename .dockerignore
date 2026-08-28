@@ -4,7 +4,6 @@
 .venv/
 examples/
 helm/
-pixoo_rest/pixoo/
 .env
 .gitignore
 .gitmodules

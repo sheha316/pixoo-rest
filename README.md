@@ -39,7 +39,6 @@ So... I'll keep maintaining the project as long as there's enough interest.
 * [Changelog](#changelog)
 * [Getting started](#getting-started)
    * [Clone](#clone)
-   * [Init](#init)
    * [Configure](#configure)
 * [Running](#running)
    * [Direct](#direct)
@@ -98,13 +97,6 @@ git clone https://github.com/4ch1m/pixoo-rest.git
 ... and change directory:
 ```bash
 cd pixoo-rest
-```
-
-### Init
-
-Update/initialize the `pixoo` [submodule](.gitmodules):
-```bash
-git submodule update --init
 ```
 
 ### Configure
