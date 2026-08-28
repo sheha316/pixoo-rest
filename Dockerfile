@@ -16,7 +16,7 @@ RUN uv sync --locked
 COPY static static/
 COPY pixoo_rest pixoo_rest/
 
-HEALTHCHECK --interval=5m --timeout=3s \
-    CMD curl --fail --silent http://localhost:8000/${SCRIPT_NAME}/health || exit 1
+HEALTHCHECK --interval=30s --start-period=30s --timeout=3s \
+    CMD curl --fail --silent http://localhost:8000/health || exit 1
 
 CMD [ "uv", "run", "python", "-m", "pixoo_rest.addon_entrypoint" ]
