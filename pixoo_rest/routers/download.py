@@ -59,14 +59,18 @@ def download_image(image_model: Annotated[ImageModel, Form()], response: Respons
         response.status_code = status.HTTP_424_FAILED_DEPENDENCY
         return ResponseModel(message=f'Error downloading the image: {e}')
 
-    pixoo.draw_image_at_location(
-        Image.open(_response.raw),
-        image_model.x,
-        image_model.y
-    )
+    try:
+        pixoo.draw_image_at_location(
+            Image.open(_response.raw),
+            image_model.x,
+            image_model.y
+        )
 
-    if image_model.push_immediately:
-        pixoo.push()
+        if image_model.push_immediately:
+            pixoo.push()
+    except (requests.exceptions.RequestException, OSError) as e:
+        response.status_code = status.HTTP_424_FAILED_DEPENDENCY
+        return ResponseModel(message=f'Error communicating with the Pixoo device: {e}')
 
     return ResponseModel(message='OK')
 

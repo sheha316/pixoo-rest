@@ -455,7 +455,7 @@ wheels = [
 
 [[package]]
 name = "pixoo-rest"
-version = "2.2.3"
+version = "2.2.4"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },

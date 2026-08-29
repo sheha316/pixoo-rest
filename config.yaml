@@ -1,5 +1,5 @@
 name: "Pixoo REST"
-version: "2.2.3"
+version: "2.2.4"
 slug: "pixoo_rest"
 description: "A RESTful API to easily interact with the Wi-Fi enabled Divoom Pixoo devices."
 url: "https://github.com/sheha316/pixoo-rest"

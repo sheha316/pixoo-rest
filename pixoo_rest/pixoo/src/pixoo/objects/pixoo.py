@@ -2,6 +2,7 @@ import base64
 import json
 
 import requests
+from requests.adapters import HTTPAdapter
 from PIL import Image, ImageOps
 
 from .simulator import Simulator
@@ -17,6 +18,17 @@ class Pixoo:
     __refresh_counter_limit = 32
     __simulator = None
 
+    class _TimeoutHTTPAdapter(HTTPAdapter):
+        """Applies a default timeout so a slow/unresponsive Pixoo device
+        fails fast instead of hanging the request indefinitely."""
+
+        DEFAULT_TIMEOUT = 10
+
+        def send(self, *args, **kwargs):
+            if kwargs.get('timeout') is None:
+                kwargs['timeout'] = self.DEFAULT_TIMEOUT
+            return super().send(*args, **kwargs)
+
     def __init__(self, ip_address=None, size=64, debug=False, refresh_connection_automatically=True,
                  simulated=False,
                  simulation_config=SimulatorConfiguration()):
@@ -25,6 +37,10 @@ class Pixoo:
             'Valid options are 16, 32, and 64'
 
         self.simulated = simulated
+
+        self.__session = requests.Session()
+        self.__session.mount('http://', self._TimeoutHTTPAdapter())
+        self.__session.mount('https://', self._TimeoutHTTPAdapter())
 
         # Attempt to load the IP if it's not
         if ip_address is None:
@@ -243,7 +259,7 @@ class Pixoo:
         if self.simulated:
             return None
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Channel/GetAllConf',
         }))
 
@@ -258,7 +274,7 @@ class Pixoo:
         if self.simulated:
             return None
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/GetDeviceTime',
         }))
 
@@ -275,7 +291,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/PlayTFGif',
             'FileType': 0,
             'FileName': file_path
@@ -290,7 +306,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/PlayTFGif',
             'FileType': 1,
             'FileName': path
@@ -305,7 +321,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/PlayTFGif',
             'FileType': 2,
             'FileName': gif_file_url
@@ -320,7 +336,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/PlayBuzzer',
             'ActiveTimeInCycle': active_cycle_time,
             'OffTimeInCycle': inactive_cycle_time,
@@ -335,7 +351,7 @@ class Pixoo:
         self.__send_buffer()
 
     def reboot(self):
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/SysReboot'
         }))
 
@@ -355,7 +371,7 @@ class Pixoo:
         # Make sure the identifier is valid
         identifier = clamp(identifier, 0, 19)
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Draw/SendHttpText',
             'TextId': identifier,
             'x': xy[0],
@@ -383,7 +399,7 @@ class Pixoo:
             return
 
         brightness = clamp(brightness, 0, 100)
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Channel/SetBrightness',
             'Brightness': brightness
         }))
@@ -396,7 +412,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Channel/SetIndex',
             'SelectIndex': int(channel)
         }))
@@ -409,7 +425,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Channel/SetClockSelectId',
             'ClockId': clock_id
         }))
@@ -425,7 +441,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/SetHighLightMode',
             'Mode': on
         }))
@@ -438,7 +454,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/SetMirrorMode',
             'Mode': on
         }))
@@ -451,7 +467,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Tools/SetNoiseStatus',
             'NoiseStatus': on
         }))
@@ -464,7 +480,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Tools/SetScoreBoard',
             'BlueScore': clamp(blue_score, 0, 999),
             'RedScore': clamp(red_score, 0, 999)
@@ -479,7 +495,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Channel/OnOffScreen',
             'OnOff': 1 if on else 0
         }))
@@ -498,7 +514,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Channel/SetEqPosition',
             'EqPosition': equalizer_position
         }))
@@ -511,7 +527,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Device/SetWhiteBalance',
             'RValue': clamp(white_balance[0], 0, 100),
             'GValue': clamp(white_balance[1], 0, 100),
@@ -555,7 +571,7 @@ class Pixoo:
             self.__counter = 1
             return
 
-        response = requests.post(self.__url, '{"Command": "Draw/GetHttpGifId"}')
+        response = self.__session.post(self.__url, '{"Command": "Draw/GetHttpGifId"}')
         data = response.json()
         if data['ReturnCode'] != 0:
             self.__error(data)
@@ -586,7 +602,7 @@ class Pixoo:
             return
 
         # Encode the buffer to base64 encoding
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Draw/SendHttpGif',
             'PicNum': 1,
             'PicWidth': self.size,
@@ -612,7 +628,7 @@ class Pixoo:
         if self.simulated:
             return
 
-        response = requests.post(self.__url, json.dumps({
+        response = self.__session.post(self.__url, json.dumps({
             'Command': 'Draw/ResetHttpGifId'
         }))
         data = response.json()

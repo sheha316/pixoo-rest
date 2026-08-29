@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.4 (2026-08-29)
+
+* the vendored Pixoo library now applies a 10s default timeout to every HTTP call it makes to the physical device (previously none of them had one, so a slow/unresponsive device could hang the request indefinitely)
+* `POST /download/image` now catches errors talking to the physical Pixoo device and returns a clean `424` response instead of letting the request fail in a way that could reset the client's connection
+
 ## 2.2.3 (2026-08-29)
 
 * the `Connection: close` header workaround wasn't enough to stop intermittent "Server disconnected" / "Connection reset by peer" errors; the integration now uses its own dedicated `aiohttp` session with `force_close=True` (instead of Home Assistant's shared session) and retries up to 3 times with a short backoff
