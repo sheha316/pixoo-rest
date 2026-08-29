@@ -2,7 +2,7 @@
 
 name = 'pixoo_rest'
 description = 'A RESTful API to easily interact with the Wi-Fi enabled Divoom Pixoo devices.'
-version = '2.2.2'
+version = '2.2.3'
 readme = 'README.md'
 
 requires-python = '>=3.14'

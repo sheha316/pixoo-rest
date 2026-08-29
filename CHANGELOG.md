@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.3 (2026-08-29)
+
+* the `Connection: close` header workaround wasn't enough to stop intermittent "Server disconnected" / "Connection reset by peer" errors; the integration now uses its own dedicated `aiohttp` session with `force_close=True` (instead of Home Assistant's shared session) and retries up to 3 times with a short backoff
+
 ## 2.2.2 (2026-08-29)
 
 * fixed intermittent "Server disconnected" errors from the Home Assistant integration, caused by reusing a stale keep-alive connection to the add-on's web server; requests now close the connection explicitly and retry once on disconnect

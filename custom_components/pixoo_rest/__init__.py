@@ -1,16 +1,16 @@
 """The Pixoo REST integration."""
 from __future__ import annotations
 
+import asyncio
 import logging
 
-from aiohttp import ClientConnectionError, ServerDisconnectedError
+from aiohttp import ClientConnectionError, ClientSession, ClientTimeout, ServerDisconnectedError, TCPConnector
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_BASE_PATH,
@@ -53,7 +53,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     hass.data[DOMAIN].pop(entry.entry_id, None)
 
-    if not hass.data[DOMAIN]:
+    if not any(key != "_session" for key in hass.data[DOMAIN]):
         for service in (
             SERVICE_DRAW_IMAGE_FROM_URL,
             SERVICE_DRAW_GIF_FROM_URL,
@@ -66,6 +66,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ):
             hass.services.async_remove(DOMAIN, service)
 
+        session: ClientSession | None = hass.data[DOMAIN].pop("_session", None)
+        if session is not None:
+            await session.close()
+
     return True
 
 
@@ -76,29 +80,47 @@ def _first_base_url(hass: HomeAssistant) -> str:
     own server. Multiple entries are unlikely, so the first is used; a
     per-target selector can be added if that turns out to be needed.
     """
-    entries = list(hass.data.get(DOMAIN, {}).values())
+    entries = [value for key, value in hass.data.get(DOMAIN, {}).items() if key != "_session"]
     if not entries:
         raise HomeAssistantError("No Pixoo REST config entry is set up.")
     return entries[0]["base_url"]
 
 
-async def _request(hass: HomeAssistant, method: str, path: str, **kwargs) -> None:
-    session = async_get_clientsession(hass)
-    url = f"{_first_base_url(hass)}{path}"
-    headers = {**kwargs.pop("headers", {}), "Connection": "close"}
+def _get_session(hass: HomeAssistant) -> ClientSession:
+    """Return a dedicated session for talking to pixoo_rest servers.
 
-    for attempt in range(2):
+    A pooled/keep-alive connection (including Home Assistant's shared,
+    integration-wide session) intermittently gets reused after the add-on's
+    uvicorn server has already closed it, surfacing as "Server disconnected" /
+    "Connection reset by peer". Forcing every connection closed after use
+    avoids reusing a stale socket.
+    """
+    session = hass.data[DOMAIN].get("_session")
+    if session is None or session.closed:
+        session = ClientSession(
+            connector=TCPConnector(force_close=True, enable_cleanup_closed=True),
+            timeout=ClientTimeout(total=30),
+        )
+        hass.data[DOMAIN]["_session"] = session
+    return session
+
+
+async def _request(hass: HomeAssistant, method: str, path: str, **kwargs) -> None:
+    session = _get_session(hass)
+    url = f"{_first_base_url(hass)}{path}"
+    attempts = 3
+
+    for attempt in range(attempts):
         try:
-            response = await session.request(method, url, headers=headers, **kwargs)
+            response = await session.request(method, url, **kwargs)
             response.raise_for_status()
             return
-        except (ServerDisconnectedError, ClientConnectionError):
-            if attempt == 1:
-                raise
+        except (ServerDisconnectedError, ClientConnectionError) as err:
+            if attempt == attempts - 1:
+                raise HomeAssistantError(f"Pixoo REST call to {path} failed: {err}") from err
+            await asyncio.sleep(0.5 * (attempt + 1))
         except Exception as err:  # noqa: BLE001 - surfaced to the user as-is
             raise HomeAssistantError(f"Pixoo REST call to {path} failed: {err}") from err
-
-    raise HomeAssistantError(f"Pixoo REST call to {path} failed: Server disconnected")
 
 
 def _register_services(hass: HomeAssistant) -> None:
