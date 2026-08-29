@@ -15,6 +15,7 @@ RUN uv sync --locked
 
 COPY static static/
 COPY pixoo_rest pixoo_rest/
+COPY custom_components custom_components/
 
 HEALTHCHECK --interval=30s --start-period=30s --timeout=3s \
     CMD curl --fail --silent http://localhost:8000/health || exit 1

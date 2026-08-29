@@ -8,6 +8,10 @@ arch:
   - aarch64
 startup: services
 boot: auto
+hassio_api: true
+homeassistant_api: true
+map:
+  - config:rw
 ports:
   8000/tcp: 8000
 ports_description:
