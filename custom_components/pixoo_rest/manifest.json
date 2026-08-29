@@ -1,0 +1,11 @@
+{
+  "domain": "pixoo_rest",
+  "name": "Pixoo REST",
+  "codeowners": ["@sheha316"],
+  "config_flow": true,
+  "documentation": "https://github.com/sheha316/pixoo-rest",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/sheha316/pixoo-rest/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

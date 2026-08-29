@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Pixoo REST",
+        "description": "Enter the connection details of your Pixoo REST server. If you installed it as a Home Assistant add-on, the defaults below usually work as-is.",
+        "data": {
+          "name": "Name",
+          "host": "Host",
+          "port": "Port",
+          "base_path": "Base path (optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the Pixoo REST server. Check the host, port and that it is running."
+    },
+    "abort": {
+      "already_configured": "This Pixoo REST server is already configured."
+    }
+  }
+}

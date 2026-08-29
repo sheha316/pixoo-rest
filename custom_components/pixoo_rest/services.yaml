@@ -1,0 +1,222 @@
+draw_image_from_url:
+  name: Draw image from URL
+  description: Downloads an image from a URL and draws it on the Pixoo.
+  fields:
+    url:
+      name: Image URL
+      description: The URL of the image to download and display.
+      required: true
+      example: "https://raw.githubusercontent.com/4ch1m/pixoo-rest/master/examples/Heart_pixelart.png"
+      selector:
+        text:
+    x:
+      name: X position
+      description: Horizontal pixel position.
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    y:
+      name: Y position
+      description: Vertical pixel position.
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    push_immediately:
+      name: Push immediately
+      description: Push the draw buffer to the device immediately.
+      default: true
+      selector:
+        boolean:
+
+draw_gif_from_url:
+  name: Draw GIF from URL
+  description: Downloads an animated GIF from a URL and plays it on the Pixoo.
+  fields:
+    url:
+      name: GIF URL
+      description: The URL of the animated GIF to download and display.
+      required: true
+      selector:
+        text:
+    animation_speed:
+      name: Animation speed
+      description: Animation speed in milliseconds.
+      default: 100
+      selector:
+        number:
+          min: 0
+          mode: box
+    skip_first_frame:
+      name: Skip first frame
+      description: Workaround for GIFs whose converted first frame looks glitchy.
+      default: false
+      selector:
+        boolean:
+
+draw_text_from_url:
+  name: Draw text from URL
+  description: Periodically queries text from a URL and scrolls it on the Pixoo.
+  fields:
+    url:
+      name: Text URL
+      description: >-
+        URL returning JSON like {"ReturnCode": 0, "ReturnMessage": "",
+        "DispData": "Hello World!"}.
+      required: true
+      selector:
+        text:
+    id:
+      name: Text element ID
+      description: Unique id of this text element (0-39).
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 39
+          mode: box
+    x:
+      name: X position
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    y:
+      name: Y position
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    horizontal_alignment:
+      name: Horizontal alignment
+      description: 1 = left, 2 = middle, 3 = right.
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 3
+          mode: box
+    update_interval:
+      name: Update interval
+      description: Update interval in seconds.
+      default: 60
+      selector:
+        number:
+          min: 1
+          mode: box
+
+draw_text:
+  name: Draw text
+  description: Draws static text directly on the Pixoo.
+  fields:
+    text:
+      name: Text
+      description: The text to display.
+      required: true
+      selector:
+        text:
+    x:
+      name: X position
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    y:
+      name: Y position
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    r:
+      name: Red
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          mode: box
+    g:
+      name: Green
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          mode: box
+    b:
+      name: Blue
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          mode: box
+    push_immediately:
+      name: Push immediately
+      default: true
+      selector:
+        boolean:
+
+set_brightness:
+  name: Set brightness
+  description: Sets the display brightness.
+  fields:
+    percentage:
+      name: Brightness
+      description: Percentage value of display brightness.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+
+set_channel:
+  name: Set channel
+  description: Switches the Pixoo to a different channel.
+  fields:
+    number:
+      name: Channel number
+      required: true
+      selector:
+        number:
+          min: 0
+          mode: box
+
+screen_on_off:
+  name: Turn screen on/off
+  description: Turns the Pixoo display on or off.
+  fields:
+    "on":
+      name: On
+      required: true
+      selector:
+        boolean:
+
+passthrough:
+  name: Passthrough
+  description: >-
+    Sends a raw request to any Pixoo REST endpoint not covered by a
+    dedicated action above (e.g. draw/fill, draw/rectangle, divoom/*, or
+    any device passthrough route).
+  fields:
+    route:
+      name: Route
+      description: The Pixoo REST path to call, e.g. "fill" or "passthrough/draw/reset_http_gif_id".
+      required: true
+      example: "fill"
+      selector:
+        text:
+    payload:
+      name: Payload
+      description: The JSON body to send with the request.
+      selector:
+        object:
