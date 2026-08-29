@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1 (2026-08-29)
+
+* the add-on now self-installs the Home Assistant integration into `/config/custom_components` on startup (requires a Home Assistant restart afterwards, then add it via Settings > Devices & Services) — no manual file copying needed
+
 ## 2.2.0 (2026-08-29)
 
 * new: native Home Assistant integration (`custom_components/pixoo_rest`), installable via HACS or manually, with a config flow (Settings > Devices & Services) and ready-to-use actions (`draw_image_from_url`, `draw_gif_from_url`, `draw_text_from_url`, `draw_text`, `set_brightness`, `set_channel`, `screen_on_off`, `passthrough`) — no more hand-written `rest_command:` YAML needed
