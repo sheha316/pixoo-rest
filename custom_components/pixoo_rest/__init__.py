@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 
+from aiohttp import ClientConnectionError, ServerDisconnectedError
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
@@ -84,12 +85,20 @@ def _first_base_url(hass: HomeAssistant) -> str:
 async def _request(hass: HomeAssistant, method: str, path: str, **kwargs) -> None:
     session = async_get_clientsession(hass)
     url = f"{_first_base_url(hass)}{path}"
+    headers = {**kwargs.pop("headers", {}), "Connection": "close"}
 
-    try:
-        response = await session.request(method, url, **kwargs)
-        response.raise_for_status()
-    except Exception as err:  # noqa: BLE001 - surfaced to the user as-is
-        raise HomeAssistantError(f"Pixoo REST call to {path} failed: {err}") from err
+    for attempt in range(2):
+        try:
+            response = await session.request(method, url, headers=headers, **kwargs)
+            response.raise_for_status()
+            return
+        except (ServerDisconnectedError, ClientConnectionError):
+            if attempt == 1:
+                raise
+        except Exception as err:  # noqa: BLE001 - surfaced to the user as-is
+            raise HomeAssistantError(f"Pixoo REST call to {path} failed: {err}") from err
+
+    raise HomeAssistantError(f"Pixoo REST call to {path} failed: Server disconnected")
 
 
 def _register_services(hass: HomeAssistant) -> None:

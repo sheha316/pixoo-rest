@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2 (2026-08-29)
+
+* fixed intermittent "Server disconnected" errors from the Home Assistant integration, caused by reusing a stale keep-alive connection to the add-on's web server; requests now close the connection explicitly and retry once on disconnect
+
 ## 2.2.1 (2026-08-29)
 
 * the add-on now self-installs the Home Assistant integration into `/config/custom_components` on startup (requires a Home Assistant restart afterwards, then add it via Settings > Devices & Services) — no manual file copying needed

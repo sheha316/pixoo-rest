@@ -4,6 +4,12 @@
 
 ---
 
+:fork_and_knife: **This is a fork.**
+
+This repository is a fork of the original [4ch1m/pixoo-rest](https://github.com/4ch1m/pixoo-rest) project, adding packaging as a Home Assistant add-on plus a native Home Assistant integration (see [below](#home-assistant-integration)). For everything else — the underlying REST API, Swagger/ReDoc UI, pass-through endpoints, Helm chart, etc. — please refer to the [original README](https://github.com/4ch1m/pixoo-rest#readme) and give the original project a :star:.
+
+---
+
 :tada: **MAJOR UPDATE**
 
 Beginning with version `2.0.0` this app now uses [FastAPI](https://fastapi.tiangolo.com/) (instead of _Flask_) to generate the Swagger UI.
@@ -44,6 +50,9 @@ So... I'll keep maintaining the project as long as there's enough interest.
    * [Direct](#direct)
    * [Containerized](#containerized)
    * [Home Assistant Add-on](#home-assistant-add-on)
+* [Home Assistant Integration](#home-assistant-integration)
+   * [Installing](#installing)
+   * [Actions](#actions)
 * [Usage](#usage)
    * [Examples](#examples)
 * [License](#license)
@@ -185,6 +194,75 @@ add-on (tested on Home Assistant OS):
 4. Find **Pixoo REST** in the store and click **Install**.
 5. Open the **Configuration** tab and set `PIXOO_HOST` (and any other options) to match your device.
 6. Start the add-on, then use **Open Web UI** to reach the Swagger UI at `/docs`.
+
+## Home Assistant Integration
+
+Calling the REST API from Home Assistant automations used to mean hand-writing a
+[`rest_command:`](https://www.home-assistant.io/integrations/rest_command/) entry in
+`configuration.yaml` — getting the endpoint path, content-type and payload exactly right,
+then restarting Home Assistant. This repo now ships a native `custom_components/pixoo_rest`
+integration instead, configured entirely through the UI, that registers ready-to-use Actions.
+
+### Installing
+
+If you installed **Pixoo REST** as the [Home Assistant Add-on](#home-assistant-add-on) described
+above, the integration installs itself automatically:
+
+1. Start (or update) the add-on. On startup it copies itself into `/config/custom_components/pixoo_rest`.
+2. A persistent notification appears asking you to restart Home Assistant. Do that.
+3. Go to **Settings** → **Devices & Services** → **Add Integration** → search for **Pixoo REST**.
+4. Accept the defaults (`localhost` / `8000`) if the add-on and Home Assistant Core run on the same
+   host — otherwise enter the host/port of wherever your `pixoo_rest` server is reachable (e.g. your
+   `docker-compose.yml` or Helm deployment).
+
+Not using the add-on? Copy `custom_components/pixoo_rest` into your `config/custom_components/`
+folder manually (or install it via [HACS](https://hacs.xyz/) as a custom repository — this repo
+ships a `hacs.json`), restart Home Assistant, and add the integration the same way.
+
+### Actions
+
+Once added, these Actions show up under the `pixoo_rest` domain in **Developer Tools** → **Actions**,
+each with a proper form (see [services.yaml](custom_components/pixoo_rest/services.yaml) for every
+field):
+
+| Action | What it does |
+|---|---|
+| `pixoo_rest.draw_image_from_url` | Downloads an image from a URL and draws it on the Pixoo. |
+| `pixoo_rest.draw_gif_from_url` | Downloads an animated GIF from a URL and plays it. |
+| `pixoo_rest.draw_text_from_url` | Periodically queries text from a URL and scrolls it on screen. |
+| `pixoo_rest.draw_text` | Draws static text directly. |
+| `pixoo_rest.set_brightness` | Sets display brightness (0-100%). |
+| `pixoo_rest.set_channel` | Switches to a different channel. |
+| `pixoo_rest.screen_on_off` | Turns the display on or off. |
+| `pixoo_rest.passthrough` | Escape hatch: sends a raw request to any other `pixoo_rest` endpoint (`fill`, `rectangle`, `divoom/*`, any pass-through route) not covered above. |
+
+Example — draw an image from a URL:
+
+```yaml
+action: pixoo_rest.draw_image_from_url
+data:
+  url: "https://raw.githubusercontent.com/4ch1m/pixoo-rest/master/examples/Heart_pixelart.png"
+  x: 0
+  "y": 0
+  push_immediately: true
+```
+
+> [!TIP]
+> Local images work too — anything placed in `config/www/` is served by Home Assistant under
+> `/local/`, e.g. `http://homeassistant:8123/local/my_image.png`.
+
+Example — reach an endpoint that has no dedicated Action yet (e.g. `fill`) via `passthrough`:
+
+```yaml
+action: pixoo_rest.passthrough
+data:
+  route: "fill"
+  payload:
+    r: 255
+    g: 0
+    b: 0
+    push_immediately: true
+```
 
 ## Usage
 
