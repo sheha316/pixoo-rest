@@ -211,9 +211,16 @@ above, the integration installs itself automatically:
 1. Start (or update) the add-on. On startup it copies itself into `/config/custom_components/pixoo_rest`.
 2. A persistent notification appears asking you to restart Home Assistant. Do that.
 3. Go to **Settings** → **Devices & Services** → **Add Integration** → search for **Pixoo REST**.
-4. Accept the defaults (`localhost` / `8000`) if the add-on and Home Assistant Core run on the same
+4. Accept the defaults (`127.0.0.1` / `8000`) if the add-on and Home Assistant Core run on the same
    host — otherwise enter the host/port of wherever your `pixoo_rest` server is reachable (e.g. your
    `docker-compose.yml` or Helm deployment).
+
+> [!TIP]
+> The default host is `127.0.0.1`, not `localhost`. On some setups (notably Docker Desktop on
+> Windows) resolving `localhost` can intermittently prefer IPv6 and cause requests to randomly fail
+> with a "Connection reset by peer" / "Server disconnected" error. If you edited the host to
+> `localhost` and see that error, switch it back to `127.0.0.1` (or your explicit IP address) via
+> **Settings** → **Devices & Services** → **Pixoo REST** → **⋮** → **Reconfigure**.
 
 Not using the add-on? Copy `custom_components/pixoo_rest` into your `config/custom_components/`
 folder manually (or install it via [HACS](https://hacs.xyz/) as a custom repository — this repo

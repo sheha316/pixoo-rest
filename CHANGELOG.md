@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.5 (2026-08-29)
+
+* the integration's config flow now defaults to `127.0.0.1` instead of `localhost`, avoiding intermittent "Connection reset by peer" / "Server disconnected" errors seen on some setups (notably Docker Desktop on Windows) where resolving `localhost` can flip between IPv4/IPv6; documented the gotcha in the README for anyone who changes it back to `localhost` manually
+
 ## 2.2.4 (2026-08-29)
 
 * the vendored Pixoo library now applies a 10s default timeout to every HTTP call it makes to the physical device (previously none of them had one, so a slow/unresponsive device could hang the request indefinitely)

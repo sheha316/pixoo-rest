@@ -6,7 +6,7 @@ CONF_HOST = "host"
 CONF_PORT = "port"
 CONF_BASE_PATH = "base_path"
 
-DEFAULT_HOST = "localhost"
+DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8000
 DEFAULT_BASE_PATH = ""
 
