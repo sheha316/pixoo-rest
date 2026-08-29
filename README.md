@@ -304,7 +304,7 @@ A few example (shell-)scripts can be found here:
 
 I'm a software developer from Chile, creating projects like this in my free time. If you like my work, consider supporting me:
 
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/andresshehn)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/gbraad](https://buymeacoffee.com/andresshehn))
 
 ## License
 
