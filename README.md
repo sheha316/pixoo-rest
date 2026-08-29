@@ -57,6 +57,7 @@ So... I'll keep maintaining the project as long as there's enough interest.
    * [Actions](#actions)
 * [Usage](#usage)
    * [Examples](#examples)
+* [Support Me](#support-me)
 * [License](#license)
 
 ## Introduction
@@ -298,6 +299,12 @@ A few example (shell-)scripts can be found here:
 * Example animation file ([duck.gif](examples/duck.gif)) by `kotnaszynce` / [OpenGameArt](https://opengameart.org/content/cute-duck-animated-set).
 * Example pixel art image ([Heart_pixelart.png](examples/Heart_pixelart.png)) by `El Rolo Ueeqee` / [WikiMedia](https://de.wikipedia.org/wiki/Datei:Heart_pixelart.png).
 * Smiley [favicon](static/favicon.ico) by `tulpahn` / [FlatIcon](https://www.flaticon.com/free-icons/smile).
+
+## Support Me
+
+I'm a software developer from Chile, creating projects like this in my free time. If you like my work, consider supporting me:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/andresshehn)
 
 ## License
 
