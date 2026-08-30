@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.6 (2026-08-29)
+
+* fixed `POST /download/gif` and `POST /sendGif` sending requests to the physical Pixoo device on port 80 instead of port 9000 (the port the device's local HTTP API actually listens on), which caused every GIF send to fail with a connection-refused error while static image sends worked fine
+
 ## 2.2.5 (2026-08-29)
 
 * the integration's config flow now defaults to `127.0.0.1` instead of `localhost`, avoiding intermittent "Connection reset by peer" / "Server disconnected" errors seen on some setups (notably Docker Desktop on Windows) where resolving `localhost` can flip between IPv4/IPv6; documented the gotcha in the README for anyone who changes it back to `localhost` manually
