@@ -44,7 +44,7 @@ def handle_gif(gif: ImageFile, speed: int, skip_first_frame: bool) -> None:
     pixoo = get_pixoo()
 
     if isinstance(gif, GifImageFile) and gif.is_animated:
-        requests.post(f'http://{pixoo.ip_address}/divoom_api', json.dumps({
+        requests.post(f'http://{pixoo.ip_address}:9000/divoom_api', json.dumps({
             'Command': 'Draw/ResetHttpGifId'
         }))
 
@@ -62,7 +62,7 @@ def handle_gif(gif: ImageFile, speed: int, skip_first_frame: bool) -> None:
                 gif_frames.append(gif.convert('RGB'))
 
         for offset, gif_frame in enumerate(gif_frames):
-            requests.post(f'http://{pixoo.ip_address}/divoom_api', json.dumps({
+            requests.post(f'http://{pixoo.ip_address}:9000/divoom_api', json.dumps({
                 'Command': 'Draw/SendHttpGif',
                 'PicID': 1,
                 'PicNum': len(gif_frames),
